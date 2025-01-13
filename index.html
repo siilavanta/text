@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <!-- <script src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script> -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script>
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyD7DLegkLaecIO1FH_TOA5nbt-csdnlqdI",
+      authDomain: "donation-cms.firebaseapp.com",
+      databaseURL: "https://donation-cms-default-rtdb.firebaseio.com",
+      projectId: "donation-cms",
+      storageBucket: "donation-cms.firebasestorage.app",
+      messagingSenderId: "542858041977",
+      appId: "1:542858041977:web:d4a1420e800736e0e1d2a8",
+      measurementId: "G-WJYLVM2FDX"
+    };
+
+
+    firebase.initializeApp(firebaseConfig);
+    //const usersRef = firebase.database().ref('users');
+
+    // console.log(usersRef)
+  </script>
+
+  <style>
+    section {
+      display: flex;
+      flex-direction: row;
+      justify-content: start;
+      padding: 10px 20px;
+    }
+
+    #left {
+      width: 30%;
+      border-right: 1px solid gray;
+      height: 100%;
+      position: fixed;
+      overflow: scroll;
+    }
+
+    #right {
+      margin-left: 32%;
+      padding: 0px 10px;
+    }
+
+    #right-input {
+
+      top: 10px;
+      position: fixed;
+      width: 100%;
+      height: 20%;
+    }
+
+    #right-view {
+      position: fixed;
+      width: 100%;
+      height: 95%;
+      overflow-y: scroll;
+    }
+
+    #existingUsers {
+      position: fixed;
+      width: 70%;
+      height: 50%;
+      margin-left: 10%;
+      background-color: purple;
+    }
+  </style>
+</head>
+
+<body>
+  <section>
+    <div id="left">
+      <div>
+        <h1>নতুন উপাসম্পদা প্রার্থীর তথ্য পূরণ</h1>
+        <!-- Form for inserting/updating user data -->
+        <form id="userForm">
+          <label for="name">প্রার্থীর নাম:</label>
+          <input type="text" id="name" required><br><br>
+
+          <label for="age">পুরাতন বর্ষা:</label>
+          <input type="number" id="age" required><br><br>
+
+          <label for="mobile">ফোন নম্বর:</label>
+          <input type="text" id="mobile" required><br><br>
+
+          <label>ধরন:</label>
+          <input type="radio" name="type" value="অধ্যক্ষ" required> অধ্যক্ষ
+          <input type="radio" name="type" value="সহবিহারী"> সহবিহারী<br><br>
+
+          <label>কার্য:</label>
+          <input type="radio" name="action" value="নতুন" required> নতুন
+          <input type="radio" name="action" value="দল্হিকম্ম"> দল্হিকম্ম<br><br>
+
+          <label>ফোনের ধরন:</label>
+          <input type="radio" name="phonetype" value="নিজের" required> নিজের
+          <input type="radio" name="phonetype" value="অন্য"> অন্য<br><br>
+
+          <button type="button" onclick="saveUser()">সংরক্ষণ করুন</button>
+        </form>
+      </div>
+
+      <h2>প্রার্থী খোঁজ করা</h2>
+      <form id="searchForm">
+        <label for="searchName">প্রার্থীর নাম:</label>
+        <input type="text" id="searchName"><br><br>
+        <label for="searchMobile">ফোন নম্বর:</label>
+        <input type="text" id="searchMobile"><br><br>
+        <button type="button" onclick="searchUser()">খোঁজ করুন</button>
+      </form>
+
+      <table id="searchResultTable" style="margin-top: 20px; display: none;">
+        <thead>
+          <tr>
+            <th>প্রার্থীর নাম</th>
+            <th>পুরাতন বর্ষা</th>
+            <th>ফোন নম্বর</th>
+            <th>ধরন</th>
+            <th>কার্য</th>
+            <th>ফোনের ধরন</th>
+            <th>অ্যাকশন</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Search results will appear here -->
+        </tbody>
+      </table>
+    </div>
+
+    <div id="right">
+      <div id="right-view">
+        <h2>নতুন উপাসম্পদা প্রার্থীবৃন্দ</h2>
+        <div>
+          <div>
+            <span id="total">সর্বমোট : </span>
+            <span id="dalhi"> : </span>
+            <span id="new">সর্বমোট : </span>
+          </div>
+          <div>
+            <button id="allView">সকল প্রার্থী</button>
+            <button id="dalhiView">দল্হিকম্ম প্রার্থী</button>
+            <button id="newView">নব প্রার্থী</button>
+            <button id="verifyView"> যাচাইকরণ প্রার্থী</button>
+
+          </div>
+        </div>
+        <table id="userTable">
+          <thead>
+            <tr>
+              <th>প্রার্থীর নাম</th>
+              <th>পুরাতন বর্ষা</th>
+              <th>ফোন নম্বর</th>
+              <th>ধরন</th>
+              <th>কার্য</th>
+              <th>ফোনের ধরন</th>
+              <th>অ্যাকশন</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dynamic rows will be added here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <div id="existingUsers"
+    style="display: none; margin-top: 20px; border: 1px solid #ccc; padding: 10px; border-radius: 5px;"></div>
+
+
+
+  <script>
+    const usersRef = firebase.database().ref('users');
+    const total = document.getElementById('total')
+    const dalhi = document.getElementById('dalhi')
+    const newMonk = document.getElementById('new')
+
+    const totalView = document.getElementById('allView')
+    const dalhiView = document.getElementById('dalhiView')
+    const newMonkView = document.getElementById('newView')
+    const verifyView = document.getElementById('verifyView')
+
+
+    totalView.addEventListener('click', ()=>{
+      const rows = document.querySelectorAll('.new, .dalhi')
+      rows.forEach((el)=>{
+        el.setAttribute('style', 'display: table-row')
+
+
+      })
+    })
+
+    verifyView.addEventListener('click', ()=>{
+      const rows = document.querySelectorAll('.new, .dalhi')
+      rows.forEach((el)=>{
+        if(el.getAttribute('class') == 'new'){
+          el.setAttribute('style', 'display: table-row')
+        }else{
+          el.setAttribute('style', 'display: none')
+
+        }
+        
+      })
+    })
+
+    newMonkView.addEventListener('click', ()=>{
+      const rows = document.querySelectorAll('.new, .dalhi')
+      rows.forEach((el)=>{
+        if(el.getAttribute('class') == 'new'){
+          el.setAttribute('style', 'display: table-row')
+        }else{
+          el.setAttribute('style', 'display: none')
+
+        }
+        
+      })
+    })
+
+    dalhiView.addEventListener('click', ()=>{
+      const rows = document.querySelectorAll('.new, .dalhi')
+      rows.forEach((el)=>{
+        if(el.getAttribute('class') == 'dalhi'){
+          el.setAttribute('style', 'display: table-row')
+        }else{
+          el.setAttribute('style', 'display: none')
+        }
+        
+      })
+    })
+
+    let overLeftNew = false;
+    let isEditing = false;
+    let editingUserKey = null;
+
+    function saveUser() {
+      const name = document.getElementById('name').value;
+      const age = document.getElementById('age').value;
+      const mobile = document.getElementById('mobile').value;
+      const type = document.querySelector('input[name="type"]:checked')?.value;
+      const action = document.querySelector('input[name="action"]:checked')?.value;
+      const phonetype = document.querySelector('input[name="phonetype"]:checked')?.value;
+      const existingUsersSection = document.getElementById('existingUsers');
+
+      if (name && age && mobile && type && action && phonetype) {
+        usersRef.once('value', (snapshot) => {
+          let existingUsers = [];
+
+          snapshot.forEach((childSnapshot) => {
+            const data = childSnapshot.val();
+            data.key = childSnapshot.key; // Include the Firebase key
+            if (data.mobile === mobile) {
+              existingUsers.push(data);
+            }
+          });
+
+          if (existingUsers.length > 0 && !isEditing) {
+            // If users exist with the same mobile number and not in editing mode, show the existing users
+            let userListHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3>এই মোবাইল নম্বর (${mobile}) এর সাথে নিম্নোক্ত ব্যবহারকারীরা ইতিমধ্যে বিদ্যমান:</h3>
+            <button onclick="closeExistingUsers()" style="background-color: red; color: white; border: none; padding: 5px 10px; cursor: pointer;">X</button>
+          </div>
+          <table border="1" style="width: 100%; text-align: left; margin-top: 10px;">
+            <thead>
+              <tr>
+                <th>নাম</th>
+                <th>পুরাতন বর্ষা</th>
+                <th>ধরন</th>
+                <th>কার্য</th>
+                <th>ফোনের ধরন</th>
+                <th>অ্যাকশন</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+
+            existingUsers.forEach(user => {
+              userListHTML += `
+            <tr id="popup-${user.key}">
+              <td>${user.name}</td>
+              <td>${user.age}</td>
+              <td>${user.type}</td>
+              <td>${user.action}</td>
+              <td>${user.phonetype}</td>
+              <td>
+                <button onclick="editUserPopup('${user.key}', '${user.name}', '${user.age}', '${user.mobile}', '${user.type}', '${user.action}', '${user.phonetype}')">Edit</button>
+                <button onclick="deleteUserPopup('${user.key}')">Delete</button>
+              </td>
+            </tr>
+          `;
+            });
+
+            userListHTML += `
+            </tbody>
+          </table>
+        `;
+
+            existingUsersSection.innerHTML = userListHTML;
+            existingUsersSection.style.display = 'block';
+          } else {
+            // If no users exist or if we are in edit mode, update or create the user
+            if (isEditing) {
+              // Update the existing user if we are in editing mode
+              usersRef.child(editingUserKey).update({
+                name: name,
+                age: age,
+                mobile: mobile,
+                type: type,
+                action: action,
+                phonetype: phonetype
+              }).then(() => {
+                alert('ব্যবহারকারী সফলভাবে আপডেট হয়েছে!');
+                document.getElementById('userForm').reset();
+                isEditing = false;
+                editingUserKey = null;
+                existingUsersSection.style.display = 'none';
+                loadUsers();
+              }).catch((error) => {
+                console.error('Error updating data: ', error);
+              });
+            } else {
+              // Create a new user if it's not in editing mode
+              usersRef.push({
+                name: name,
+                age: age,
+                mobile: mobile,
+                type: type,
+                action: action,
+                phonetype: phonetype
+              }).then(() => {
+                alert('নতুন ব্যবহারকারী সফলভাবে যোগ হয়েছে!');
+                document.getElementById('userForm').reset();
+                existingUsersSection.style.display = 'none';
+                loadUsers();
+              }).catch((error) => {
+                console.error('Error adding data: ', error);
+              });
+            }
+          }
+        });
+      } else {
+        alert('অনুগ্রহ করে সমস্ত তথ্য পূরণ করুন।');
+      }
+    }
+
+    // Function to prefill form for editing user data
+    function editUserPopup(key, name, age, mobile, type, action, phonetype) {
+      document.getElementById('name').value = name;
+      document.getElementById('age').value = age;
+      document.getElementById('mobile').value = mobile;
+      document.querySelector(`input[name="type"][value="${type}"]`).checked = true;
+      document.querySelector(`input[name="action"][value="${action}"]`).checked = true;
+      document.querySelector(`input[name="phonetype"][value="${phonetype}"]`).checked = true;
+
+      isEditing = true;
+      editingUserKey = key;
+
+      //alert('তথ্য সম্পাদনার জন্য ফর্ম পূরণ করুন এবং পুনরায় সংরক্ষণ করুন।');
+    }
+
+    // Function to delete user from popup section
+    function deleteUserPopup(key) {
+      if (confirm('আপনি কি নিশ্চিতভাবে এই ব্যবহারকারীকে মুছে ফেলতে চান?')) {
+        usersRef.child(key).remove()
+          .then(() => {
+            document.getElementById(`popup-${key}`).remove();
+            alert('ব্যবহারকারী সফলভাবে মুছে ফেলা হয়েছে!');
+          })
+          .catch((error) => {
+            console.error('Error deleting user:', error);
+          });
+      }
+    }
+
+    function overMore() {
+
+      overLeftNew = true
+
+      saveUser()
+      alert('নতুন ব্যবহারকারী সফলভাবে যোগ হয়েছে!');
+      document.getElementById('userForm').reset();
+      existingUsersSection.style.display = 'none'; // Hide existing users section
+      loadUsers();
+      overLeftNew = false
+    }
+
+    // Function to close the existing users section
+    function closeExistingUsers() {
+      const existingUsersSection = document.getElementById('existingUsers');
+      existingUsersSection.style.display = 'none';
+    }
+
+    function deleteUser(key) {
+      if (confirm('Are you sure you want to delete this user?')) {
+        usersRef.child(key).remove()
+          .then(() => console.log('delete'))
+          .catch((error) => {
+            console.error('Error deleting data: ', error)
+            alert('User deleting error')
+          });
+        document.getElementById(key)?.remove();
+      }
+    }
+
+    function loadUsers() {
+      usersRef.on('value', (snapshot) => {
+        const userTable = document.getElementById('userTable').getElementsByTagName('tbody')[0];
+        userTable.innerHTML = ''; // Clear table rows
+
+        let dCount = 0
+        let nCount = 0
+        // Create an array to store user data
+        let usersArray = [];
+
+        snapshot.forEach((childSnapshot) => {
+          const key = childSnapshot.key;
+          const data = childSnapshot.val();
+
+          // Store user data in the array
+          usersArray.push({
+            key: key,
+            name: data.name,
+            age: data.age,
+            mobile: data.mobile,
+            type: data.type,
+            action: data.action,
+            phonetype: data.phonetype
+          });
+        });
+
+        
+        // Reverse the array and populate the table
+        usersArray.reverse().forEach((user) => {
+          const row = userTable.insertRow();
+          row.id = user.key;
+
+          if (user.action == 'নতুন') {
+            row.className = "new"
+            ++nCount
+            // alert('nj')
+          } else {
+            row.className = "dalhi"
+            ++dCount
+          }
+
+          row.style.display = 'table-row'
+
+          row.innerHTML = `
+        <td>${user.name}</td>
+        <td>${user.age}</td>
+        <td>${user.mobile}</td>
+        <td>${user.type}</td>
+        <td>${user.action}</td>
+        <td>${user.phonetype}</td>
+        <td>
+          <button onclick="editUserPopup('${user.key}', '${user.name}', '${user.age}', '${user.mobile}', '${user.type}', '${user.action}', '${user.phonetype}')">Edit</button>
+          <button onclick="deleteUser('${user.key}')">Delete</button>
+        </td>
+      `;
+
+          newMonk.innerHTML = "নব প্রার্থী = " + nCount
+          dalhi.innerHTML = "দল্হিকম্ম প্রার্থী = " + dCount
+          total.innerHTML = "সর্বমোট = " + (nCount + dCount)
+        });
+
+
+      });
+
+
+    }
+
+
+    function editUser(key, name, age, mobile, type, action, phonetype) {
+      document.getElementById('name').value = name;
+      document.getElementById('age').value = age;
+      document.getElementById('mobile').value = mobile;
+      document.querySelector(`input[name="type"][value="${type}"]`).checked = true;
+      document.querySelector(`input[name="action"][value="${action}"]`).checked = true;
+      document.querySelector(`input[name="phonetype"][value="${phonetype}"]`).checked = true;
+    }
+
+    function searchUser() {
+      const searchName = document.getElementById('searchName').value.trim().toLowerCase();
+      const searchMobile = document.getElementById('searchMobile').value.trim();
+
+      usersRef.once('value', (snapshot) => {
+        const resultTable = document.getElementById('searchResultTable');
+        const resultBody = resultTable.getElementsByTagName('tbody')[0];
+        resultBody.innerHTML = '';
+        let found = false;
+
+        snapshot.forEach((childSnapshot) => {
+          const data = childSnapshot.val();
+          const isNameMatch = searchName ? data.name.toLowerCase().includes(searchName) : true;
+          const isMobileMatch = searchMobile ? data.mobile === searchMobile : true;
+
+          if (isNameMatch && isMobileMatch) {
+            found = true;
+            const row = resultBody.insertRow();
+            row.innerHTML = `
+              <td>${data.name}</td>
+              <td>${data.age}</td>
+              <td>${data.mobile}</td>
+              <td>${data.type}</td>
+              <td>${data.action}</td>
+              <td>${data.phonetype}</td>
+              <td>
+               <button onclick="editUserPopup('${childSnapshot.key}', '${data.name}', '${data.age}', '${data.mobile}', '${data.type}', '${data.action}', '${data.phonetype}')">Edit</button>
+                <button onclick="deleteUser('${childSnapshot.key}')">Delete</button>
+              </td>
+            `;
+          }
+        });
+
+        if (found) {
+          resultTable.style.display = 'table';
+        } else {
+          resultTable.style.display = 'none';
+          alert('No user found with the given criteria.');
+        }
+      });
+    }
+
+    window.onload = loadUsers;
+  </script>
+
+</body>
+
+</html>
