@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=2.0, user-scalable=no" />
+
+    <meta name="siilavanta"
+        content="article app">
+        <link rel="stylesheet" href="./css/all.css"> <!--load all styles -->
+        <link rel="stylesheet" href="./css/regular.css">
+        <link rel="stylesheet" href="./css/solid.css">
+        <link rel="stylesheet" href="./css/fontawesome.css">
+            
+    <title>author</title>
+
+</head>
+<style type="text/css"
+    media="all">
+    @font-face {
+        font-family: NotoSerifBengali;
+        src: url(./font/NotoSerifBengali.ttf);
+    }
+
+    body {
+        margin: 0px;
+        font-family: NotoSerifBengali;
+        src: url(./font/NotoSerifBengali.ttf);
+        user-select: none;
+    }
+
+    body {
+        margin: 0px;
+
+    }
+
+    .top {
+        background: #108dc7;
+        /* fallback for old browsers */
+        background: -webkit-linear-gradient(to bottom, #2c87d7, #ffffff);
+        /* Chrome 10-25, Safari 5.1-6 */
+        background: linear-gradient(to bottom, #2c87d7, #ffffff);
+        border-bottom: 10px solid #fcb9b1;
+        border-radius: 0px 0px 20px 20px;
+    }
+
+    .top #header {
+
+        width: 100%;
+        height: 60px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+    }
+
+    #header .header_item {
+        align-self: center;
+        padding: 5px 10px;
+    }
+
+    #bigpic img {
+        align-self: center;
+        width: 50%;
+        height: 30vh;
+        margin: 2% 25%;
+        border-radius: 200%;
+        background: goldenrod;
+
+
+    }
+
+    #label {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 10px;
+
+    }
+
+    #label div {
+        text-align: center;
+       
+        padding: 2px 10px;
+        border: 1px solid wheat;
+
+
+    }
+
+    #post_container {
+        margin: 10px 5px 5px 5px;
+    padding: 15px 5px;
+    border: 1px solid wheat;
+    border-radius: 20px 20px 0px 0px;
+    }
+
+    .author_name {
+        text-align: center;
+    }
+
+    #post_container .react {
+        border-bottom: solid 1px salmon;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
+        border-top: solid 1px salmon;
+        padding: 3px 2px 2px 2px;
+    }
+
+    .post_txt {
+        display: none;
+    }
+
+    .title {
+        font-size: 16px;
+       
+    }
+
+    .box {
+        background: radial-gradient(circle at top right, transparent 60px, #000 60px);
+        height: 150px;
+        width: 250px;
+    }
+
+    .react_item {
+        margin: 0px 10px;
+    }
+    .read_more{
+        
+        padding: 4px;
+        box-shadow: -19px 2px 9px -3px white;
+        color: rgb(214 122 178);
+        font-size: 18px;
+
+    }
+    
+    .center{
+    text-align: center;
+    margin: 0px;
+}
+.active{
+    text-align: center;
+}
+</style>
+
+<body style="user-select: none;">
+    <div class="top">
+        <div id="header">
+            <div onclick="goBackAndroid('back')"
+                id="header_left"
+                class="header_item">
+                <i style="font-size: 24px;" class="fas fa-chevron-left"></i>
+            </div>
+            <div id="header_middle"
+                class="header_item">
+                <p id="header_name"></p>
+            </div>
+            <div id="header_right"
+                class="header_item">
+                <i style="font-size: 24px;" class="fas fa-ellipsis-v threedot"></i>
+            </div>
+
+
+        </div>
+
+        <div id="">
+            <div id="bigpic">
+                <img id="profile_photo"
+                    src="./icon//ic_launcher_round.png"
+                    alt="" />
+            </div>
+           
+        </div>
+       
+        
+    </div>
+    <div id="label">
+
+        <div id="post_label">
+            <div onclick="optionView(event, 'post')">
+                <span>প্রবন্ধ : </span>
+                <span class="totalpost"></span>
+            </div>
+        </div>
+
+        <div id="poem_label">
+            <div onclick="optionView(event, 'poem')">
+                <span>কবিতা : </span>
+                <span class="totalkobita"></span>
+            </div>
+        </div>
+
+    </div>
+    <div id="post_container">
+
+    </div>
+    <script type="text/javascript"
+        charset="utf-8">
+            var isAndroid = function () {
+                var useragent = navigator.userAgent.toLowerCase();
+                if (useragent.indexOf('android') > -1) {
+                    // console.log('android')
+                    return true;
+                } else {
+                    //console.log('pc')
+                    return false;
+                }
+            }
+
+            var header_name = document.getElementById('header_name');
+            var header_item = document.querySelectorAll('.header_item');
+            var post_container = document.getElementById('post_container');
+            var profile_photo = document.getElementById('profile_photo')
+            var order = window.localStorage.getItem('order');
+            var nameId = window.localStorage.getItem('name');
+            var getBnName = window.localStorage.getItem('bnName');
+
+            var src = nameId;
+            document.title = order + ' : ' + nameId;
+
+
+
+            header_name.innerHTML = 'লেখক ' + getBnName;
+            profile_photo.setAttribute('onerror', 'errPic(event)')
+            profile_photo.setAttribute('src', `./author/${order}/${nameId}.png`)
+            //post_container.innerHTML = order + ' : ' + name;
+
+            const loadPost = () => {
+                var script = document.createElement('script');
+                script.src = `./author/${order}/${src}.js`
+                post_container.appendChild(script)
+            }
+            loadPost()
+
+            
+
+            function readhelper() {
+                var post_title = document.querySelectorAll('.title');
+                var title = document.querySelector('.title')
+                var post_txt = document.querySelectorAll('.post_txt');
+                var totalpost = document.querySelector('.totalpost');
+                var totalkobita = document.querySelector('.totalkobita');
+                var totalsong = document.querySelector('.totalsong');
+
+                var react = document.querySelectorAll('.react')
+                
+                var reactTxt = `
+    <div class="like react_item"> <span class="like_icon"></span> <span class="likes_num">129</span></div>
+    <div class="view react_item"> <span class="view_icon"> </span> ‍<span class="views_num">400</span></div>
+    <div class="comment react_item"> <span class="comment_icon"> </span> ‍<span class="comments_num">44</span></div>
+    <div class="share react_item"> <span class="share_icon"> </span> ‍<span class="shares_num">70</span></div>
+`
+
+                function summary(){
+                    var max = 120;
+                    for(var i = 0; i < post_txt.length; i++){
+                        var txt = post_txt[i].querySelector('.txt')
+                        var tempTxt = txt.textContent
+
+                       // console.log(tempTxt[0].length)
+                       var sumTxt = tempTxt.substring(0, max);
+                       react[i].insertAdjacentHTML('beforebegin', `<p style="display:inline;" class="sum_${nameId + i}">${sumTxt}</p>
+                       <span onclick="openPost(event, '${nameId + i}', 'title${i}')" id="read_more_${nameId + i}" class="read_more">আরো দেখুন</span>`);
+
+                       react[i].setAttribute('onclick', 'alrt()')
+                    }
+                }
+               
+                // set attribute on .post_txt and .post_title class
+                for (var i = 0; i < post_txt.length; i++) {
+                    post_txt[i].setAttribute('id', `${nameId + i}`);
+                    post_title[i].setAttribute('onclick', `openPost(event, '${nameId + i}', 'title${i}')`);
+                    post_title[i].setAttribute('id', `title${i}`)
+                    react[i].innerHTML = reactTxt;
+                }
+
+                var like_icon = document.querySelectorAll('.like_icon');
+                var view_icon = document.querySelectorAll('.view_icon');
+                var comment_icon = document.querySelectorAll('.comment_icon');
+                var share_icon = document.querySelectorAll('.share_icon');
+
+                //
+
+                var likes_num = document.querySelectorAll('.likes_num');
+                var views_num = document.querySelectorAll('.views_num');
+                var comments_num = document.querySelectorAll('.comments_num');
+                var shares_num = document.querySelectorAll('.shares_num');
+
+                for (var i = 0; i < like_icon.length; i++) {
+
+                    like_icon[i].innerHTML = '<i class="far fa-thumbs-up fill"></i>'
+                    view_icon[i].innerHTML = '<i class="far fa-eye"></i>'
+                    comment_icon[i].innerHTML = ' <i class="far fa-comment-alt"></i>'
+                    share_icon[i].innerHTML = '<i class="fas fa-share-alt"></i>'
+
+                    
+                }
+
+                summary();
+                totalpost.innerHTML = 0;
+                totalkobita.innerHTML = 0;
+                if(title.getAttribute('class') === "title poem"){
+                    totalkobita.innerHTML = post_title.length;
+                }else{
+                    totalpost.innerHTML = post_title.length;
+                }
+                
+                //totalsong.innerHTML = 0
+                
+            }
+
+            function optionView(event, id) {
+
+            }
+
+            function openPost(evt, id, tid) {
+
+                var i, post_txt, title;
+                post_txt = document.getElementsByClassName("post_txt");
+                for (i = 0; i < post_txt.length; i++) {
+                    //post_txt[i].style.display = "none";
+                }
+                title = document.querySelectorAll(".title");
+                for (i = 0; i < title.length; i++) {
+                    title[i].className = title[i].className.replace(" active", "");
+                }
+                var post = document.getElementById(id);
+                var sum_post = document.querySelector(`.sum_${id}`);
+                var read_more = document.querySelector(`#read_more_${id}`)
+                // var unread = read_more.innerHTML
+                // var oldtxt = read_more.textContent
+                // console.log(oldtxt)
+               
+                var att = post.getAttribute('style');
+                if(att === null){
+                   
+                    document.getElementById(tid).style.textAlign = 'center'
+                    post.style.display = "block";
+                    sum_post.style.display = 'none'
+                    read_more.innerText = "দেখা বন্ধ করুন"
+                }else if(att !== null){
+                    //post.style.display = "none";
+                    read_more.innerText = "আরো দেখুন"
+                    sum_post.style.display = 'inline'
+                    post.removeAttribute('style')
+                  
+                    document.getElementById(tid).style.textAlign = 'left'
+
+                }
+                //evt.currentTarget.className += " active";
+                console.log(evt, id)
+                
+                
+            }
+            
+        function alrt(){
+            alert("এটি এখন সচল নয়")
+        }
+            function likefun(likeNum){
+                var like = []
+                like.push(likeNum)
+                console.log(like)
+            }
+
+            var profile_photo = document.getElementById('profile_photo')
+
+var onlongtouch;
+var timer;
+var touchduration = 5000; //length of time we want the user to touch before we do something
+
+function touchstart(e) {
+    try {
+        e.preventDefault();
+        if (!timer) {
+            timer = setTimeout(onlongtouch, touchduration);
+        }
+    } catch (error) {
+        console.log('touch not support')
+    }
+}
+
+function touchend() {
+    //stops short touches from firing the event
+    if (timer) {
+        clearTimeout(timer);
+        timer = null;
+
+    }
+   // fbsearch.style.display = 'none';
+}
+
+onlongtouch = function () {
+    timer = null;
+   // fbsearch.style.display = 'flex';
+   console.log('time out 5000')
+   document.body.setAttribute('style', 'user-select: auto;')
+   alert('হয়েছে, আমাকে ছেড়ে ‍দিন')
+};
+
+document.addEventListener("DOMContentLoaded", function (event) {
+    window.addEventListener("touchstart", touchstart, false);
+    window.addEventListener("touchend", touchend, false);
+});
+          
+            //dr. jinobodhi bhante probajja > 1974uposampada > 1978
+        </script>
+<script src="./imgerr.js"></script>
+<script src="./goBack.js"></script>
+<script src="./app.js"></script>
+</body>
+
+</html>

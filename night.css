@@ -1,0 +1,22 @@
+body, div, section, h1, h2, h3, p, span{
+    background-color: rgb(26, 39, 68);
+}
+
+.col {
+    float: none;
+    width: 94%;
+    text-align: left;
+    }
+.img_div{
+    display: inline-block;
+    }
+.imgbox{
+    height: 45px;
+    width: 45px;
+    margin-left: 20px;
+}
+.textbox{
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+}

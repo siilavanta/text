@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2.0, user-scalable=no"/>
+    <title>abagahon (অবগাহন)</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="welcome.css">
+    <link rel="stylesheet" href="spin.css">
+   <script src="./authorlist.js"></script>
+   <script src="./authorhelper.js"></script>
+   <style id="styleview"></style>
+</head>
+<body>
+   
+    <section style="display: none;">
+        <div id="navbar">
+            <div onclick="searchView()" class="navitem" id="navleft">
+            <i class="fas fa-search "></i>
+                
+            </div>
+            <div class="navitem" id="navmiddle">
+                <div class="middleitem">
+                    <div class="appname">
+                        <div class="loader awesome-spin"></div>
+                        <img class="app_icon" height="30px" width="30px" src="./icon/ic_launcher_round.png" alt=""></div>
+                    <div class="appname">
+                       
+                        <p>অবগাহন</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="navitem" id="navright">
+                <div onclick="clickThreeDot()" class="rightitem">
+                    <!-- <img class="rightitem-icon" height="24px" width="24px" src="./icon/threedot.svg" alt=""> -->
+                    <i class="fas fa-ellipsis-v threedot"></i>
+                </div>
+        
+            </div>
+        </div>
+        <div id="discription">বৌদ্ধধর্মীয় জ্ঞান ভাগাভাগি করার উন্মুক্ত প্লাটফর্ম</div>
+        
+        <div id="toolbar">
+            <div id="item_list">
+                <div id="theme" class="item">
+                    <span class="icon"></span>
+                    <span class="item_title"></span>
+                </div>
+                <div id="view" class="item">
+                    <span class="icon"></span>
+                    <span class="item_title"></span>
+                    <div onclick="viewOption(event)" id="viewoption">
+                        <li id="grid" class="view">সজ্জিত প্রদর্শন</li>
+                        <li id="list" class="view">তালিকা প্রদর্শন</li>
+                        <li id="title" class="view">শিরোনাম প্রদর্শন</li>
+
+                    </div>
+                </div>
+               
+                <div id="filter" class="item">
+                    <span class="icon"></span>
+                    <span class="item_title"></span>
+                    <div id="filteroption">
+                        <li onclick="filterOption('alphabet')" id="alphabet" class="filter">বর্ণানুক্রমিক</li>
+                        <li onclick="filterOption('older')" id="older" class="filter">জ্যেষ্ঠতানুযায়ী</li>
+                        <li onclick="filterOption('popular')" id="popular" class="filter">জনপ্রিয়তানুযায়ী</li>
+                        <li onclick="filterOption('posting')" id="posting" class="filter">লেখা ভিত্তিক</li>
+
+                    </div>
+                </div>
+                <div id="notification" class="item">
+                    <span class="icon"></span>
+                    <span class="item_title"></span>
+                </div>
+    
+            </div>
+        </div>
+        <head>
+            <link rel="stylesheet" href="./css/all.css"> <!--load all styles -->
+            <link rel="stylesheet" href="./css/regular.css">
+            <link rel="stylesheet" href="./css/solid.css">
+            <link rel="stylesheet" href="./css/fontawesome.css">
+          </head>
+          <body>
+            
+            <!-- <i class="far fa-sun"></i>
+            <i class="fas fa-chevron-left"></i>
+            <i class="fas fa-chevron-left"></i>
+            <i class="far fa-user"></i>
+            <i class="fas fa-sync-alt"></i>
+            <i class="far fa-comment-alt"></i>
+            <i class="far fa-bell notify"></i>
+            <i class="fas fa-ellipsis-v threedot"></i>
+            <i class="fas fa-share-alt"></i>
+            <i class="fas fa-search"></i>
+            <i class="fas fa-thumbs-up full"></i>
+            <i class="far fa-thumbs-up fill"></i>
+            <i class="fas fa-times close"></i>
+            <i class="fas fa-reply"></i>
+            <i class="far fa-eye"></i>
+            <i class="far fa-question-circle"></i>
+            <i class="fas fa-moon"></i>
+            <i class="far fa-sun"></i>
+            <i class="fas fa-sort-amount-up"></i> -->
+            <!--brand icon-->
+            <!-- <i class="fab fa-github-square"></i> uses brands style -->
+          </body>
+        <div id="authorname">
+           <div class="borderbox">
+                <div class="headline_main" ><h2 class="headline"></h2></div>
+                    <div class="row" id="monkauthor">
+                        
+                    </div>
+                <div class="moreview_main" onclick="loadMoreAuthor('monk')" >
+                    <div id="moreview" class="moretxt">  </div>
+                </div>
+           </div>
+            <div class="borderbox">
+                    <div class="headline_main"><h2 class="headline"></h2></div>
+                        <div class="row" id="manauthor">
+                        </div>
+                <div class="moreview_main" onclick="loadMoreAuthor('man')" >    
+                    <div id="moreview" class="moretxt"> </div>   
+                </div>
+            </div>
+        </div>
+          
+
+        
+    </section>
+    <div id="splash"  class="flex-container" 
+        style ="background: #51a4ec ; display: none"  >
+    
+     <!--Center align Splash contents in all screen sizes-->
+         <div style="background-color: #51a4ec;" class ="flex-item" >
+          <img src="./icon/ic_launcher_round.png" 
+               alt="app_icon" 
+               style="width:150px ; background-color: #51a4ec; margin-top: 10%; height :150px;"
+               />
+           
+               <h4 style="color: white;">জ্ঞানপিপাসু, সত্যসন্ধানী ও স্বপ্নসমৃদ্ধ অগ্রগামীদের
+                <br>অবগাহনে স্বাগতম</h4>
+         </div>
+     </div>
+
+     <div id="sidebar_main">
+         <div id="sidebar">
+             <li onclick="Androidshare.about('')" class="side_list" id="about_app"><i class="fas fa-eject"></i>অ্যাপটি সম্পর্কে</li>
+             <li onclick="Androidshare.share('')" class="side_list" id="share_app"><i class="fas fa-share-alt"></i>অ্যাপটি শেয়ার করুন</li>
+             <li onclick="Androidrate.rate('')" class="side_list" id="rate_app"><i class="far fa-thumbs-up"></i>অ্যাপটিতে রেটিং দিন</li>
+             
+
+         </div>
+     </div>
+
+     <div onclick="closeByOutclick()" id="outclick"></div>
+     <div id="filteroption_first">
+        <div>
+            <div class="election"><h2>লেখক প্রদর্শনী বাছাই করুন</h2></div>
+            <div class="election_item">
+                <li onclick="el('alphabet')" id="alphabet" class="filter">বর্ণানুক্রমিক</li>
+                <li onclick="el('older')" id="older" class="filter">জ্যেষ্ঠতানুযায়ী</li>
+                <li onclick="el('popular')" id="popular" class="filter">জনপ্রিয়তানুযায়ী</li>
+                <li onclick="el('posting')" id="posting" class="filter">লেখা ভিত্তিক</li>
+            </div>
+        </div>
+
+    </div>
+    <script>
+        var headline = document.querySelectorAll('.headline');
+        var moretxt = document.querySelectorAll('.moretxt');
+        headline.forEach((txt)=>{
+            txt.innerHTML = 'লেখকশ্রেণী'
+        })
+        var arrow_right = '<i class="fas fa-chevron-right"></i>'
+        var arrow_left = ' <i class="fas fa-chevron-left"></i>'
+        moretxt.forEach((txt)=>{
+            txt.innerHTML = `<span>পরবর্তী লেখক </span>${arrow_right}`
+        })
+        var toolbar = document.getElementById('toolbar');
+            var item_title = document.querySelectorAll('.item_title')
+            var prevScroll = window.pageYOffset;
+            function hideTile() {
+                for (var i = 0; i < item_title.length; i++) {
+                    item_title[i].style.display = "none"
+                }
+            }
+            function showTile() {
+                for (var i = 0; i < item_title.length; i++) {
+                    item_title[i].style.display = "block"
+                }
+            }
+            window.onscroll = function () {
+                var currentScroll = window.pageYOffset;
+                if (prevScroll > currentScroll) {
+
+                    if (currentScroll <= 60) {
+                        showTile()
+                        toolbar.style.cssText = "top: 0px; position: relative; z-index: 200;"
+                    } else {
+                        hideTile()
+                        toolbar.style.cssText = "top: 0px; position: fixed; z-index: 200;"
+                    }
+
+                } else {
+                    hideTile();
+                    toolbar.style.cssText = "top: 0px; position: fixed; z-index: 200;"
+
+                }
+                prevScroll = currentScroll;
+                // console.log(currentScroll)
+            }
+            var election_item = document.querySelector('.election_item')
+            var li = election_item.querySelectorAll('li');
+
+            const el = (id) => {
+                window.localStorage.setItem('filterOption', `${id}`)
+                document.getElementById('filteroption_first').style.display = 'none'
+                var sortItem = window.localStorage.getItem('filterOption')
+                setTimeout(()=>{
+                        loadBySort(`${sortItem}`);
+                    },  500)
+                
+            }
+           
+            var option_view = window.localStorage.getItem('filterOption');
+            if (option_view !== null) {
+                document.getElementById('filteroption_first').style.display = 'none'
+            } else {
+
+            }
+
+            const closeByOutclick = ()=>{
+                sidebar_main.style.display = 'none'
+                outclick.style.display = 'none'
+            }
+            var outclick = document.getElementById('outclick');
+            var sidebar_main = document.getElementById('sidebar_main');
+            const clickThreeDot = ()=>{
+                sidebar_main.style.display = 'block'
+                outclick.style.display = 'block'
+            }
+    </script>
+ 
+
+    <script src="./toolbar.js"></script>
+    <script src="./postnum.js"></script>
+    <script src="./welcome.js"></script>
+    <script src="./app.js"></script>
+    <script src="./imgerr.js"></script>
+    <script src="./goBack.js"></script>
+</body>
+</html>
