@@ -216,6 +216,10 @@ input.addEventListener('focusout', () => {
   }, 200);
 });
 
+
+input.addEventListener('focusin', ()=>{
+  list.style.display = 'block';
+})
 /**
  * 
  * @param {string} value 
