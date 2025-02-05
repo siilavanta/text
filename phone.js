@@ -179,6 +179,6 @@ const phoneId = document.getElementById('phone')
 
       const num  = el[1] != '' ? el[1] : 'No number'
 
-      const htmlTemp = `<div class="item">${++i} ${el[0]}: <a href="tel:${num}">${num}</a> | <a href="https://wa.me/+88${num}">WhatsApp</a></div>`
+      const htmlTemp = `<div class="item">${++i}. ${el[0]}: <a href="tel:${num}">${num}</a> | <a href="https://wa.me/+88${num}">WhatsApp</a></div>`
       phoneId.insertAdjacentHTML('beforeend', htmlTemp)
     })
